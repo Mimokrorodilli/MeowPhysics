@@ -2,12 +2,16 @@ from phys.Vector2D import *
 from graphics.Figure import * 
 import uuid
 import dearpygui.dearpygui as dpg
+from config.const import is_moving
 
 class Rectangle(Figure):
-    def __init__(self, size, pos: Vector2D):
+    register = {}
+    def __init__(self, size = 100, pos = Vector2D()):
         self.pos = pos
         self.size = size
         self.id = str(uuid.uuid4())
+        self.drag = 0
+        self.register[self.id] = self
     
     def draw_in_pos(self, pos: Vector2D):
         self.pos.x = pos.x
@@ -25,12 +29,12 @@ class Rectangle(Figure):
         )
     
     def contains_point(self, mouse_pos: Vector2D):
-        #f"проверяет, попал ли курсор мыши в позиции {mouse_pos.x}, {mouse_pos.y} в область фигуры"
         half_size = self.size / 2
-        if (self.pos.x - half_size <= mouse_pos.x <= self.pos.x + half_size):
-            if (self.pos.y - half_size <= mouse_pos.y <= self.pos.y + half_size):
+        if ((self.pos.x - half_size) <= mouse_pos.x <= (self.pos.x + half_size)):
+            if ((self.pos.y - half_size) <= mouse_pos.y <= (self.pos.y + half_size)):
                 return True
         return False
+    
     
 class Line(Figure):
     def __init__(self, pos_a = Vector2D(), pos_b = Vector2D()):

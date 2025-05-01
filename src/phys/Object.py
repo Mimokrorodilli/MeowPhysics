@@ -16,7 +16,7 @@ class Object:
         self.is_moving_local = True
         self.acceleration = Vector2D(0, 0)
 
-        self.tag = str(uuid.uuid4())
+        self.tag = self.picture.id
         Object.register[self.tag] = self
 
     def put_link(self, s):
@@ -63,3 +63,7 @@ class Spring: #починить наледование (убрать его на
         direction = current_l / current_l.norm()
         F_e = direction * (current_l.norm() - self._L0_per_tag[A.tag].norm()) * self.k
         return F_e * (-1)
+    
+def change_resistance():
+    global resistance
+    resistance ^= 1 #XOR 
