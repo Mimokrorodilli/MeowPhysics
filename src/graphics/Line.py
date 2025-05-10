@@ -2,11 +2,11 @@ from phys.Vector2D import Vector2D
 import Figure, uuid
 import dearpygui.dearpygui as dpg
 
-class Line(Figure):
-    def __init__(self, pos_a: Vector2D, pos_b: Vector2D):
+class Line:
+    def __init__(self, pos_a: Vector2D, pos_b: Vector2D, color = [240, 177, 178, 255]):
         self.pos_a = pos_a
         self.pos_b = pos_b
-
+        self.color = color
     def draw_in_pos(self, pos_start: Vector2D, pos_end: Vector2D):
         self.pos_a = pos_start
         self.pos_b = pos_end
@@ -15,7 +15,7 @@ class Line(Figure):
         dpg.draw_line(
                 p1,
                 p2, 
-                color=(240, 177, 178, 255), 
+                color=self.color, 
                 thickness=3.0, 
                 tag=str(uuid.uuid4()),
                 parent="canvas"

@@ -10,12 +10,3 @@ def handle_phys(o: Object):
         o.velocity = o.velocity + (o.acceleration + a_old) * tick / 2
         o.draw_spring()
         o.picture.draw_in_pos(o.pos)
-
-
-# def change_moving(): #TODO: перекинуть туда, где это будет уместнее
-#     global is_moving
-#     is_moving ^= 1 #XOR 
-
-# def change_resistance():
-#     global resistance
-#     resistance ^= 1 #XOR 

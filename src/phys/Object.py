@@ -1,6 +1,5 @@
 from phys.Vector2D import *
 import uuid
-# from phys.Spring import Spring
 from graphics.Rectangle import *
 from config.const import *
 
@@ -41,15 +40,14 @@ class Object:
             Spring.register[id].line.draw_in_pos(Spring.register[id].pos, pos_end)
 
 
-class Spring: #починить наледование (убрать его нахуй) 
+class Spring: 
     register = {}
 
-    def __init__(self, pos: Vector2D, k, line = Line()):
+    def __init__(self, pos: Vector2D, k, line: Line):
         self.pos = pos
         self.k = k
         self._L0_per_tag = {}
         self.line = line
-
         self.tag = str(uuid.uuid4())
         Spring.register[self.tag] = self
 

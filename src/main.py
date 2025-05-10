@@ -30,12 +30,30 @@ def drag_callback(sender, app_data):
                 r.drag = False
 
 dpg.create_context()
-dpg.create_viewport(title='meow', width=800, height=600)
+dpg.create_viewport(title='Simulation of vibrations of objects on springs', width=800, height=600)
 
 with dpg.window(tag="Main Window"):
-    with dpg.group(horizontal=True):
-        dpg.add_button(label="ON/OFF Moving", callback=change_moving)
-        dpg.add_button(label="ON/OFF Resistance", callback=change_resistance)
+    with dpg.menu_bar():
+        with dpg.menu(label="General"):
+            dpg.add_button(label="ON/OFF Moving", callback=change_moving)
+            dpg.add_button(label="ON/OFF Resistance", callback=change_resistance)
+            dpg.add_slider_float(label="free fall acceleration", default_value=9.8, max_value=100, tag="free fall acceleration", callback=save_values)
+
+        with dpg.menu(label="Object 1"):
+            dpg.add_color_picker(label="Object 1 color", default_value=Color, tag='Object 1 color', callback=save_values)
+            dpg.add_slider_float(label="Object 1 mass", default_value=20, max_value=100, tag="Object mass 1", callback=save_values)
+        
+        with dpg.menu(label="Object 2"):
+            dpg.add_color_picker(label="Object 2 color", default_value=Color, tag='Object 2 color', callback=save_values)
+            dpg.add_slider_float(label="Object 2 mass", default_value=30, max_value=100, tag="Object mass 2", callback=save_values)
+        
+        with dpg.menu(label='Springs'):
+            dpg.add_slider_float(label='elastic coefficient 1', tag='s1', default_value=s1.k, max_value=30, callback=save_values)
+            dpg.add_slider_float(label='elastic coefficient 2', tag='s2', default_value=s2.k, max_value=30, callback=save_values)
+            dpg.add_color_picker(label="Spring 1 color", default_value=s1.line.color, tag='line 1 color', callback=save_values)
+            dpg.add_color_picker(label="Spring 2 color", default_value=s2.line.color, tag='line 2 color', callback=save_values)
+    
+    
     dpg.add_drawlist(width=800, height=600, tag="canvas")
 dpg.setup_dearpygui()
 dpg.show_viewport()

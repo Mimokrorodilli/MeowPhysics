@@ -2,16 +2,17 @@ from phys.Vector2D import *
 from graphics.Figure import * 
 import uuid
 import dearpygui.dearpygui as dpg
-from config.const import is_moving
+from config.const import Color
 
 class Rectangle(Figure):
     register = {}
-    def __init__(self, size = 100, pos = Vector2D()):
+    def __init__(self, size = 100, pos = Vector2D(), color = Color):
         self.pos = pos
         self.size = size
         self.id = str(uuid.uuid4())
         self.drag = 0
         self.register[self.id] = self
+        self.color = color
     
     def draw_in_pos(self, pos: Vector2D):
         self.pos.x = pos.x
@@ -22,8 +23,8 @@ class Rectangle(Figure):
         dpg.draw_rectangle(
             left_up, 
             right_down,
-            color=(253, 217, 0, 255),  
-            fill=(253, 217, 0, 200),
+            color=self.color,  
+            fill=self.color,
             tag=self.id,
             parent="canvas"
         )
@@ -36,10 +37,11 @@ class Rectangle(Figure):
         return False
     
     
-class Line(Figure):
-    def __init__(self, pos_a = Vector2D(), pos_b = Vector2D()):
+class Line:
+    def __init__(self, pos_a: Vector2D, pos_b: Vector2D, color = [240, 177, 178, 255]):
         self.pos_a = pos_a
         self.pos_b = pos_b
+        self.color = color
 
     def draw_in_pos(self, pos_start: Vector2D, pos_end: Vector2D):
         self.pos_a = pos_start
@@ -49,7 +51,7 @@ class Line(Figure):
         dpg.draw_line(
                 p1,
                 p2, 
-                color=(240, 177, 178, 255), 
+                color=self.color, 
                 thickness=3.0, 
                 tag=str(uuid.uuid4()),
                 parent="canvas"
