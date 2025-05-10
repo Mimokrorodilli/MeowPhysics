@@ -10,7 +10,7 @@ class Vector2D:
     def __init__(self, x = 0, y = 0):
         self.x = x
         self.y = y
-
+        
     def __add__(self, other: "Vector2D"):
         new_x = self.x + other.x
         new_y = self.y + other.y
@@ -51,11 +51,11 @@ class Figure(Vector2D):
 
 
 class Rectangle(Figure):
-    def __init__(self, size, pos: Vector2D, picture: Figure):
+    def __init__(self, size = 10, pos = Vector2D(), picture = Figure()):
         self.pos = pos
         self.size = size
         self.picture = picture
-        self.id = generate_random_string()
+        self.id = str(uuid.uuid4())
     
     def draw_in_pos(self, pos: Vector2D):
         self.pos.x = pos.x
@@ -80,12 +80,30 @@ class Rectangle(Figure):
                 return True
         return False
 
+class Line(Figure):
+    def __init__(self, pos_a = Vector2D(), pos_b = Vector2D()):
+        self.pos_a = pos_a
+        self.pos_b = pos_b
 
-class Object(Rectangle):
+    def draw_in_pos(self, pos_start: Vector2D, pos_end: Vector2D):
+        self.pos_a = pos_start
+        self.pos_b = pos_end
+        p1 = [self.pos_a.x, self.pos_a.y]
+        p2 = [self.pos_b.x, self.pos_b.y]
+        dpg.draw_line(
+                p1,
+                p2, 
+                color=(240, 177, 178, 255), 
+                thickness=3.0, 
+                tag=str(uuid.uuid4()),
+                parent="canvas"
+            )
+
+
+class Object:
     register = {}
 
-
-    def __init__(self, picture: Rectangle, mass = 1, velocity: Vector2D = Vector2D(0, 0)):
+    def __init__(self, picture = Rectangle(), mass = 1, velocity: Vector2D = Vector2D(0, 0)):
         self.pos = picture.pos
         self.picture = picture
         self.mass = mass
@@ -115,26 +133,19 @@ class Object(Rectangle):
 
     def draw_spring(self):
         for id in self._linkers:
-            p1 = [Spring.register[id].pos.x, Spring.register[id].pos.y]
-            p2 = [self.pos.x, self.pos.y - self.picture.size/2]
-            dpg.draw_line(
-                p1,
-                p2, 
-                color=(240, 177, 178, 255), 
-                thickness=3.0, 
-                tag=str(uuid.uuid4()),
-                parent="canvas"
-            )
+            pos_end = Vector2D(self.pos.x, self.pos.y) # - self.picture.size / 2)
+            Spring.register[id].line.draw_in_pos(Spring.register[id].pos, pos_end)
     
 
-class Spring:
+class Spring: #починить наледование (убрать его) 
     _counter = 0 
     register = {}
 
-    def __init__(self, pos: Vector2D, k):
+    def __init__(self, pos: Vector2D, k, line = Line()):
         self.pos = pos
         self.k = k
         self._L0_per_tag = {}
+        self.line = line
 
         Spring._counter += 1
         self.tag = f"spring_{Spring._counter}" 
@@ -161,7 +172,6 @@ def handle_phys(o: Object):
         o.velocity = o.velocity + (o.acceleration + a_old) * tick / 2
         o.draw_spring()
         o.picture.draw_in_pos(o.pos)
-        # print(a.x, a.y)
 
 def change_moving():
     global is_moving
@@ -171,9 +181,8 @@ def change_resistance():
     global resistance
     resistance ^= 1 #XOR 
 
-f = Figure()
-r = Rectangle(100, Vector2D(600, 100), f)
-r1 = Rectangle(60, Vector2D(300, 100), f)
+r = Rectangle(100, Vector2D(600, 100))
+r1 = Rectangle(60, Vector2D(300, 100))
 o = Object(r, 30)
 o1 = Object(r1, 20)
 s1 = Spring(Vector2D(200, 200), 10)
